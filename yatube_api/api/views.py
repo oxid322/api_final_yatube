@@ -96,7 +96,8 @@ class FollowViewSet(ListModelMixin, CreateModelMixin, GenericViewSet):
     search_fields = ('user__username', 'following__username')
 
     def list(self, request, *args, **kwargs):
-        data = self.filter_queryset(self.queryset.filter(user=request.user))
+        data = self.filter_queryset(self.
+                                    queryset.filter(user=request.user))
         serializer = FollowSerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -109,12 +110,16 @@ class FollowViewSet(ListModelMixin, CreateModelMixin, GenericViewSet):
             if serializer.validated_data['following'] == user:
                 raise ValidationError(code=400,
                                       detail={
-                                          'detail': 'You cannot follow yourself!'
+                                          'detail':
+                                              'You cannot follow yourself!'
                                       })
             try:
                 Follow.objects.get(user=user,
-                                   following=serializer.validated_data['following'])
+                                   following=serializer
+                                   .validated_data['following'])
             except Follow.DoesNotExist:
                 serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(serializer.data,
+                                status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
